@@ -1,9 +1,6 @@
 import React from "react";
-import { registerRootComponent } from "expo";
 import AuthNavigation from "./components/navigation/auth-navigation/AuthNavigation";
 
-function App() {
-  return <AuthNavigation />;
-}
+const App = () => <AuthNavigation />;
 
-registerRootComponent(App);
+export default App;

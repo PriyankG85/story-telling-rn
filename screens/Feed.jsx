@@ -54,17 +54,17 @@ const styles = StyleSheet.create({
       Platform.OS === "android" ? StatusBar.currentHeight : RFValue(35),
   },
   appTitle: {
-    flex: 0.07,
+    paddingVertical: 5,
     flexDirection: "row",
   },
   appIcon: {
-    flex: 0.3,
+    flex: 0.25,
     justifyContent: "center",
     alignItems: "center",
   },
   iconImage: {
-    width: "100%",
-    height: "100%",
+    width: 35,
+    height: 35,
     resizeMode: "contain",
   },
   appTitleTextContainer: {
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     fontFamily: "Bubblegum-Sans",
   },
   cardContainer: {
-    flex: 0.85,
+    flex: 1,
   },
 });
 

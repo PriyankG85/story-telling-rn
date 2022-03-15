@@ -1,11 +1,14 @@
 import { StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import AppLoading from "expo-app-loading";
 import DrawerNavigator from "../DrawerNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
+import Login from "../../../screens/Login";
+import Loading from "../../../screens/Loading";
+import { createStackNavigator } from "@react-navigation/stack";
 
 const AuthNavigation = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -21,28 +24,30 @@ const AuthNavigation = () => {
 
   loaded.then(() => setFontLoaded(true));
 
-  const checkAuthStatus = () => {
-    onAuthStateChanged((user) => {
+  useEffect(() => {
+    onAuthStateChanged(getAuth(), (user) => {
       setCurrentUser(user);
       setLoading(false);
     });
-  };
+  }, []);
 
-  useEffect(() => checkAuthStatus(), []);
+  const Tab = createStackNavigator();
 
   if (loading || !fontLoaded) {
     return <AppLoading />;
   }
 
   return (
-    <NavigationContainer style={styles.container}>
+    <>
       {!currentUser ? (
-        <DrawerNavigator authStatus={"signedOut"} />
+        <Login />
       ) : (
-        <DrawerNavigator authStatus={"signedIn"} />
+        <NavigationContainer style={styles.container}>
+          <DrawerNavigator />
+          <StatusBar style="light" />
+        </NavigationContainer>
       )}
-      <StatusBar style="dark" />
-    </NavigationContainer>
+    </>
   );
 };
 

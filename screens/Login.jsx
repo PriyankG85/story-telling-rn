@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect } from "react";
-// import * as Google from "expo-google-app-auth";
+import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import {
   getAuth,
@@ -8,43 +8,38 @@ import {
   signInWithCredential,
 } from "firebase/auth";
 
+WebBrowser.maybeCompleteAuthSession();
+
 const Login = () => {
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId:
       "808812086765-l9bsnq4777e39uear12tdtkhtcfgi24n.apps.googleusercontent.com",
+    scopes: ["profile", "email"],
   });
+
+  const signIn = async (idToken) => {
+    const auth = getAuth();
+    const credential = GoogleAuthProvider.credential(idToken);
+
+    await signInWithCredential(auth, credential);
+  };
 
   useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
-
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      const credential = provider.credential(id_token);
-      signInWithCredential(auth, credential);
+      signIn(id_token);
     }
   }, [response]);
-
-  // const signInWithGoogle = async () => {
-  //   try {
-  //     const result = await Google.logInAsync({
-  //       behavior: "web",
-  //       androidClientId:
-  //         "808812086765-63736vh9grc34fltjg1v923q6hhlm35i.apps.googleusercontent.com",
-  //       iosClientId:
-  //         "808812086765-pkhcmkumld93f0kecmra596l5v5p1e9q.apps.googleusercontent.com",
-  //       scopes: ["profile", "email"],
-  //     });
-  //   } catch (err) {
-  //     Alert.alert(err.message);
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Signin with Google</Text>
-      <TouchableOpacity style={styles.signInBtn}>
-        <Text style={styles.btnText}>SignIn</Text>
+      <TouchableOpacity
+        disabled={!request}
+        onPress={() => request && promptAsync()}
+        style={styles.signInBtn}
+      >
+        <Text style={styles.btnText}>Sign In</Text>
       </TouchableOpacity>
     </View>
   );
@@ -53,23 +48,27 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 160,
     backgroundColor: "#edf2f4",
+    alignItems: "center",
   },
 
   title: {
-    fontSize: 24,
-    fontFamily: "Rowdies-Bold",
+    fontSize: 27,
+    fontFamily: "Rowdies-Regular",
   },
 
   signInBtn: {
+    marginTop: 50,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderRadius: 3,
+    borderRadius: 5,
     backgroundColor: "#48cae4",
   },
 
   btnText: {
     fontSize: 22,
+    color: "#ffffff",
     fontFamily: "Rowdies-Light",
   },
 });

@@ -2,11 +2,10 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import StackNavigator from "./StackNavigator";
 import Profile from "../../screens/Profile";
-import Login from "../../screens/Login";
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = (authStatus) => (
+const DrawerNavigator = () => (
   <Drawer.Navigator
     screenOptions={{
       drawerAllowFontScaling: true,
@@ -16,8 +15,6 @@ const DrawerNavigator = (authStatus) => (
       drawerInactiveTintColor: "white",
 
       headerTintColor: "white",
-
-      headerShown: authStatus !== "signedIn",
 
       headerTitleStyle: {
         fontFamily: "Rowdies-Regular",
@@ -32,18 +29,10 @@ const DrawerNavigator = (authStatus) => (
         width: 220,
       },
     }}
-    initialRouteName={authStatus === "signedIn" ? "Home" : "Login"}
+    initialRouteName={"Home"}
   >
-    {authStatus === "signedIn" ? (
-      <>
-        <Drawer.Screen name="Home" component={StackNavigator} />
-        <Drawer.Screen name="Profile" component={Profile} />
-      </>
-    ) : (
-      <>
-        <Drawer.Screen name="Login" component={Login} />
-      </>
-    )}
+    <Drawer.Screen name="Home" component={StackNavigator} />
+    <Drawer.Screen name="Profile" component={Profile} />
   </Drawer.Navigator>
 );
 
